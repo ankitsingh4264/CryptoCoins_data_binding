@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocoins.R
 import com.example.cryptocoins.adapter.HomeAdapter
+import com.example.cryptocoins.data.modals.CoinsResponse
 import com.example.cryptocoins.databinding.ActivityMainBinding
 import com.example.cryptocoins.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,27 +25,8 @@ class MainActivity : AppCompatActivity() {
         val binding =
             ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val homeAdapter = HomeAdapter()
-        binding.apply {
-            homeRecyclerView.apply {
-                adapter = homeAdapter
-                layoutManager = LinearLayoutManager(this@MainActivity)
-            }
-        }
-
+        binding.viewModel=viewModel
         viewModel.getCoins()
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.postCoins.collect {
-                when (it) {
-                    is Resource.Success -> {
-                        binding.homeRecyclerView.itemAnimator = null
-                        homeAdapter.submitList(null)
-                        homeAdapter.submitList(it.data)
-                    }
-                }
-            }
-        }
     }
 }

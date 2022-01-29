@@ -3,6 +3,7 @@ package com.example.cryptocoins.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cryptocoins.adapter.HomeAdapter
 import com.example.cryptocoins.data.Repository
 import com.example.cryptocoins.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class HomeViewModel @Inject constructor(
     private val _postCoins: MutableStateFlow<Resource> =
         MutableStateFlow(Resource.Empty)
     val postCoins: MutableStateFlow<Resource> = _postCoins
-
+    val adapter=HomeAdapter()
     fun getCoins(){
         job = viewModelScope.launch {
             _postCoins.value = Resource.Loading
@@ -32,8 +33,10 @@ class HomeViewModel @Inject constructor(
                 }
                 .collect {
                     _postCoins.value = Resource.Success(it)
+                    adapter.setList(it)
                     Log.d("aditya", "getCoins:${_postCoins.value} ")
                 }
         }
     }
+
 }

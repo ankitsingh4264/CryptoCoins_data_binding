@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/home_recyclerView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <data>
+         <variable
+             name="viewModel"
+             type="com.example.cryptocoins.ui.home.HomeViewModel" />
+    </data>
 
-</androidx.recyclerview.widget.RecyclerView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.home.MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_recyclerView"
+            android:layout_width="match_parent"
+            android:adapter="@{viewModel.adapter}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

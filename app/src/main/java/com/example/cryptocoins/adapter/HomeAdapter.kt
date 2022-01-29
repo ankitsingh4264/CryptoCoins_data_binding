@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cryptocoins.data.modals.CoinsResponse
 import com.example.cryptocoins.data.modals.CoinsResponseItem
 import com.example.cryptocoins.databinding.ItemHomeBinding
 
-class HomeAdapter(): ListAdapter<CoinsResponseItem, HomeAdapter.CoinsViewHolder>(CoinsComp()) {
+class HomeAdapter(): RecyclerView.Adapter<HomeAdapter.CoinsViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsViewHolder {
         val binding =
             ItemHomeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,30 +18,27 @@ class HomeAdapter(): ListAdapter<CoinsResponseItem, HomeAdapter.CoinsViewHolder>
     }
 
     override fun onBindViewHolder(holder: CoinsViewHolder, position: Int) {
-        val currentItem = getItem(position)
-        if (currentItem != null) {
-            holder.bind(currentItem)
-        }
+        val currentItem = list[position]
+        holder.bind(currentItem)
+    }
+    private var list : CoinsResponse = CoinsResponse()
+
+    fun setList(newList:CoinsResponse){
+        list=newList
+        notifyDataSetChanged()
     }
 
 
-    class CoinsViewHolder(private val binding: ItemHomeBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+
+    class CoinsViewHolder(private val binding: ItemHomeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(coins: CoinsResponseItem) {
-            binding.apply {
-                baseAsset.text = coins.baseAsset
-                lastPrice.text = coins.lastPrice
-            }
+            binding.data=coins
+            binding.executePendingBindings()
         }
     }
 
-    class CoinsComp : DiffUtil.ItemCallback<CoinsResponseItem>() {
-        override fun areItemsTheSame(oldItem: CoinsResponseItem, newItem: CoinsResponseItem) =
-            oldItem.baseAsset == newItem.baseAsset
-
-        @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: CoinsResponseItem, newItem: CoinsResponseItem) =
-            oldItem == newItem
+    override fun getItemCount(): Int {
+        return list.size
     }
 }
 
