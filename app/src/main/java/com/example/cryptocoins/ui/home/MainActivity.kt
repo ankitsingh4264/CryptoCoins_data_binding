@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,14 +20,16 @@ import kotlinx.coroutines.flow.collect
 class MainActivity : AppCompatActivity() {
 
     private val viewModel:HomeViewModel by viewModels()
+    private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding =
-            ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel=viewModel
-        viewModel.getCoins()
+        binding.lifecycleOwner=this
+        binding.executePendingBindings()
+        viewModel.getCoins(this)
+
 
     }
 }

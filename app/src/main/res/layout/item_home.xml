@@ -5,7 +5,10 @@
     <data>
         <variable
             name="data"
-            type="com.example.cryptocoins.data.modals.CoinsResponseItem" />
+            type="com.example.cryptocoins.data.modals.CoinLive" />
+        <variable
+            name="emp"
+            type="com.example.cryptocoins.ui.home.HomeViewModel" />
 
     </data>
 
@@ -19,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:textSize="16sp"
-            android:text="@{data.baseAsset}"
+            android:text="@{emp.temp.baseAsset}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +33,8 @@
             android:layout_margin="8dp"
             android:textSize="16sp"
             android:textAlignment="viewEnd"
-            android:text="@{data.lastPrice}"
+            android:hint="sdfsd"
+            android:text="@{emp.temp.lastPrice}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintStart_toEndOf="@+id/baseAsset"

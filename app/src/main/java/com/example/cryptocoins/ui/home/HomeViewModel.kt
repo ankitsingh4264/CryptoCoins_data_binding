@@ -1,10 +1,15 @@
 package com.example.cryptocoins.ui.home
 
+import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cryptocoins.adapter.HomeAdapter
 import com.example.cryptocoins.data.Repository
+import com.example.cryptocoins.data.modals.CoinLive
+import com.example.cryptocoins.data.modals.CoinsResponseItem
 import com.example.cryptocoins.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,9 +27,13 @@ class HomeViewModel @Inject constructor(
 
     private val _postCoins: MutableStateFlow<Resource> =
         MutableStateFlow(Resource.Empty)
-    val postCoins: MutableStateFlow<Resource> = _postCoins
+    val list:ArrayList<CoinLive> = ArrayList()
+    val map:HashMap<String,Int> = HashMap()
     val adapter=HomeAdapter()
-    fun getCoins(){
+    var set=false;
+    var temp:MutableLiveData<CoinsResponseItem> = MutableLiveData()
+    fun getCoins(context: LifecycleOwner){
+        adapter.context=context
         job = viewModelScope.launch {
             _postCoins.value = Resource.Loading
             repository.getCoins()
@@ -32,9 +41,28 @@ class HomeViewModel @Inject constructor(
                     _postCoins.value = Resource.Error(it)
                 }
                 .collect {
-                    _postCoins.value = Resource.Success(it)
-                    adapter.setList(it)
-                    Log.d("aditya", "getCoins:${_postCoins.value} ")
+
+                    for (index in it.indices){
+                        val cur=it[index];
+                        if (map.containsKey(cur.symbol)){
+                            val j= map[cur.symbol]
+                            if (j != null) {
+                                list[j].cdata?.value?.lastPrice = cur.lastPrice
+                            }
+                            temp.value?.lastPrice=cur.lastPrice
+                        }else {
+                            map[cur.symbol] = list.size
+                            list.add(CoinLive(MutableLiveData(it[index])))
+                        }
+                        temp.value=cur
+                    }
+//                    _postCoins.value = Resource.Success(it)
+                    if (!set){
+                        adapter.setList(list,this@HomeViewModel)
+                        set=true
+                    }
+                    Log.d("aditya", "getCoins:${list} ")
+
                 }
         }
     }
